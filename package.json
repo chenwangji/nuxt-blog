@@ -2,7 +2,7 @@
   "name": "nuxt-blog",
   "version": "1.0.0",
   "description": "My tremendous Nuxt.js project",
-  "author": "chenwangji",
+  "author": "chenwangji <694093637@qq.com>",
   "private": true,
   "scripts": {
     "dev": "cross-env HOST=0.0.0.0 PORT=3333 NODE_ENV=development nodemon server/index.js --watch server",
