@@ -5,6 +5,7 @@
     name="fade"
     class="scroll-aside">
     <a
+      v-if="!mobileLayout"
       key="2"
       href="javascript:;"
       class="scroll-btn theme"
@@ -16,21 +17,50 @@
         }"
         class="iconfont" />
     </a>
+    <a
+      v-if="showScroll"
+      key="1"
+      class="scroll-btn"
+      @click="scrollTop" >
+      <i class="iconfont icon-arrow-up" />
+    </a>
   </transition-group>
 </template>
 
 <script>
+import { getScrollTop } from '~/utils/common'
 export default {
   name: 'ScrollTop',
 
   data() {
     return {
-      theme: ''
+      theme: '',
+      showScroll: false
+    }
+  },
+
+  computed: {
+    mobileLayout() {
+      return this.$store.state.options.mobileLayout
     }
   },
 
   mounted() {
+    // theme
     this.theme = window.localStorage.getItem('THEME') || 'light'
+
+    // scrollTop
+    // 浏览器视口的高度
+    function getWindowHeight() {
+      return window.innerHeight
+    }
+    window.addEventListener('scroll', () => {
+      if (getWindowHeight() < getScrollTop() * 2) {
+        this.showScroll = true
+      } else {
+        this.showScroll = false
+      }
+    })
   },
 
   methods: {
@@ -41,6 +71,20 @@ export default {
 
       document.body.id = this.theme
       window.localStorage.setItem('THEME', this.theme)
+    },
+    scrollTop() {
+      let timer = null
+      cancelAnimationFrame(timer)
+      timer = requestAnimationFrame(function fn() {
+        let oTop = document.body.scrollTop || document.documentElement.scrollTop
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop =
+            oTop - 150
+          timer = requestAnimationFrame(fn)
+        } else {
+          cancelAnimationFrame(timer)
+        }
+      })
     }
   }
 }

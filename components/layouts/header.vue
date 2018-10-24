@@ -1,5 +1,7 @@
 <template>
-  <header class="darken">
+  <header
+    v-fix
+    class="darken">
     <div class="header">
       <div class="header-left">
         <div class="logo">
@@ -24,8 +26,35 @@
 </template>
 
 <script>
+import { getScrollTop } from '~/utils/common'
+import _ from '~/utils/underscore'
+
 export default {
   name: 'Mheader',
+
+  directives: {
+    fix: {
+      inserted(el) {
+        let beforeScrollTop = getScrollTop()
+        window.addEventListener(
+          'scroll',
+          _.throttle(() => {
+            let afterScrollTop = getScrollTop()
+            let delta = afterScrollTop - beforeScrollTop
+            if (delta === 0) return false
+            delta > 0 ? el.classList.add('fixed') : el.classList.remove('fixed')
+            setTimeout(() => {
+              beforeScrollTop = afterScrollTop
+            }, 0)
+          }, 200)
+        )
+      },
+      unbind() {
+        window.onscroll = null
+      }
+    }
+  },
+
   data() {
     return {
       nav: [
@@ -95,20 +124,20 @@ header {
   nav {
     > a {
       margin-right: 2.25rem;
-      color: $green;
+      color: $disabled;
+
+      > i {
+        margin-right: 0.5rem;
+      }
+
+      &:hover {
+        color: $black;
+      }
     }
 
-    > i {
-      margin-right: 0.5rem;
-    }
-
-    &:hover {
+    > a.link-active {
       color: $black;
     }
-  }
-
-  > a.link-active {
-    color: $black;
   }
 }
 </style>

@@ -2,23 +2,25 @@
   <section class="clearfix main">
     <div class="article">
 
-      zzz
+      <ArticleView />
 
     </div>
   </section>
 </template>
 
 <script>
+import ArticleView from '~/components/common/article'
+
 export default {
   scrollToTop: true,
 
-  transition: 'fade'
+  transition: 'fade',
+
+  components: {
+    ArticleView
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-.article {
-  color: $white;
-  @include transform(translateX(200px));
-}
 </style>

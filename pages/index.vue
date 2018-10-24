@@ -11,7 +11,9 @@
         <nuxt-link to="/fuck">民谣</nuxt-link>
       </h4>
     </div>
-    <div class="will">
+    <div
+      v-if="!mobileLayout"
+      class="will">
       <img
         src="/img/will.png"
         width="80">
@@ -50,11 +52,6 @@ export default {
     top: 280px;
     color: #eee;
 
-    &.mobile {
-      top: 40px;
-      left: 40px;
-    }
-
     .mune {
       span {
         padding: 0.35rem;
@@ -66,6 +63,11 @@ export default {
     position: absolute;
     right: 40px;
     top: 40px;
+  }
+
+  .mobile.haiyan {
+    top: 70px;
+    left: 60px;
   }
 }
 </style>
