@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import ArticleView from '~/components/common/article'
+const ArticleView = () => import('~/components/common/article')
 
 export default {
   scrollToTop: true,
@@ -20,7 +20,7 @@ export default {
   transition: 'fade',
 
   head: {
-    title: 'code'
+    title: 'funk'
   },
 
   components: {
@@ -29,7 +29,7 @@ export default {
 
   fetch({ store }) {
     console.log('fetch')
-    return store.dispatch('getArtList', { type: 1 })
+    return store.dispatch('getArtList', { type: 3 })
   },
 
   computed: {
@@ -47,7 +47,7 @@ export default {
   methods: {
     loadMore() {
       return this.$store.dispatch('getArtList', {
-        type: 1,
+        type: 3,
         current_page: this.$store.state.article.art.pagination.current_page + 1
       })
     }

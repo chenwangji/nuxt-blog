@@ -3,6 +3,11 @@ const pkg = require('./package')
 module.exports = {
   mode: 'universal',
 
+  cache: {
+    max: 1000,
+    maxAge: 900000
+  },
+
   /*
   ** Headers of the page
   */
@@ -24,26 +29,33 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: [{ src: '~assets/scss/index.scss', lang: 'scss' }],
+  css: [
+    { src: '~assets/scss/index.scss', lang: 'scss' },
+    'highlight.js/styles/github.css'
+  ],
 
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: [],
+  plugins: [
+    { src: '~/plugins/filter.js' },
+    { src: '~/plugins/highlight.js' },
+    { src: '~/plugins/marked.js' }
+  ],
 
   /*
   ** Nuxt.js modules
   */
   modules: [
     // Doc: https://github.com/nuxt-community/axios-module#usage
-    '@nuxtjs/axios'
+    // '@nuxtjs/axios'
   ],
   /*
   ** Axios module configuration
   */
-  axios: {
-    // See https://github.com/nuxt-community/axios-module#options
-  },
+  // axios: {
+  //   // See https://github.com/nuxt-community/axios-module#options
+  // },
 
   /*
   ** Build configuration
@@ -72,7 +84,13 @@ module.exports = {
       require('postcss-nested')(),
       require('postcss-responsive-type')(),
       require('postcss-hexrgba')()
-    ]
+    ],
+    // 将重复引用的(第三方/自有)模块添加到vendor.bundle.js
+    vendor: [
+      'axios',
+      'marked',
+      'highlight.js'
+    ],
   },
   dev: process.env.NODE_ENV !== 'production',
   router: {
