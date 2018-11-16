@@ -28,6 +28,56 @@
         v-html="articleContent" />
     </div>
 
+    <div class="item">
+      <div class="info">
+        <div class="info-left">
+          <span
+            class="liking"
+            @click="like">
+            <i
+              :class="{'is-liked': isLiked}"
+              class="iconfont icon-like like"/>
+            <span>{{ article.meta.likes || 0 }}</span>
+          </span>
+
+          <span
+            v-if="!mobileLayout"
+            class="tag">
+            <i class="iconfont icon-tag" />
+            <nuxt-link
+              v-for="tag in article.tag"
+              :key="tag._id"
+              :to="`/tag/${tag._id}`"
+              class="tag-list">
+              {{ tag.name }}
+            </nuxt-link>
+          </span>
+        </div>
+        <div>版权信息：
+          <a
+            href="https://creativecommons.org/licenses/by-nc/3.0/cn/deed.zh"
+            target="_blank">非商用-署名-自由转载</a>
+        </div>
+      </div>
+    </div>
+
+    <aside v-if="!mobileLayout">
+      <div
+        :class="{ 'is-liked': isLiked }"
+        class="like"
+        @click="like">
+        <i class="iconfont icon-like like" />
+        <div
+          :class="{'active': isLiked}"
+          class="like-decoration" />
+        <span>{{ article.meta.likes || 0 }}</span>
+      </div>
+      <div class="comment">
+        <i class="iconfont icon-comments" />
+        <span>{{ article.meta.comments || 0 }}</span>
+      </div>
+    </aside>
+
     <dialog-com
       :visible.sync="showDialog"
       :class="{ 'dialog-mobile': mobileLayout }"
@@ -60,6 +110,7 @@ export default {
 
   data() {
     return {
+      likeArticles: [],
       showDialog: false,
       img: ''
     }
@@ -69,22 +120,47 @@ export default {
     mobileLayout() {
       return this.$store.state.options.mobileLayout
     },
+
     article() {
       return this.$store.state.article.details
     },
+
     articleContent() {
       return markdown(this.article.content, false, true).html
+    },
+
+    isLiked() {
+      return this.likeArticles.includes(this.article._id)
     }
   },
 
   mounted() {
+    this.init()
     this.initEvent()
   },
 
   methods: {
-    hide() {
-      this.showDialog = false
+    async like() {
+      if (this.isLiked) return
+      const res = await this.$store.dispatch('likeArt', {
+        _id: this.article._id
+      })
+      if (res.code !== 1) alert(`文章点赞失败：${res.message}`)
+      else {
+        this.likeArticles.push(this.article._id)
+        window.localStorage.setItem(
+          'LIKE_ARTICLES',
+          JSON.stringify(this.likeArticles)
+        )
+      }
     },
+
+    init() {
+      this.likeArticles = JSON.parse(
+        window.localStorage.getItem('LIKE_ARTICLES') || '[]'
+      )
+    },
+
     initEvent() {
       const list = document.querySelectorAll('.img-pop')
       let _this = this
@@ -95,6 +171,10 @@ export default {
           this.img = img.getAttribute('src')
         })
       })
+    },
+
+    hide() {
+      this.showDialog = false
     }
   }
 }
@@ -355,6 +435,91 @@ export default {
           line-height: 1.6rem;
           background-color: transparent;
         }
+      }
+    }
+  }
+
+  > .item {
+    margin: 3rem 0;
+    padding: $lg-pad 0;
+
+    > .info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: $disabled;
+
+      > .info-left {
+        display: flex;
+        align-items: center;
+
+        > .liking {
+          i {
+            vertical-align: middle;
+          }
+
+          span {
+            margin-left: 0.4rem;
+            vertical-align: middle;
+          }
+        }
+
+        .like {
+          cursor: pointer;
+          margin-right: 0.3rem;
+        }
+
+        .is-liked {
+          color: $red;
+        }
+
+        .tag {
+          margin-left: 4rem;
+
+          a {
+            margin: 0 0.5rem;
+            text-decoration: underline;
+
+            &:last-child {
+              margin: 0;
+            }
+          }
+        }
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  > aside {
+    position: fixed;
+    right: 0;
+    bottom: 16.8rem;
+
+    > div {
+      position: relative;
+      width: $xlg-pad;
+      height: $xlg-pad;
+      text-align: center;
+      line-height: $xlg-pad;
+      border: 1px solid $border-color;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
+      cursor: pointer;
+
+      &.like:hover {
+        color: $red;
+        border-color: $red;
+      }
+
+      &.comment:hover {
+        color: $green;
+        border-color: $green;
+      }
+
+      &.is-liked {
+        color: $red;
       }
     }
   }

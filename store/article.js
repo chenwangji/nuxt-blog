@@ -33,5 +33,9 @@ export const mutations = {
 
   SET_DETAILS(state, data) {
     state.details = data
+  },
+
+  SET_LIKE(state) {
+    state.details.meta.likes += 1
   }
 }

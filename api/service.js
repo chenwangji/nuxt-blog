@@ -9,3 +9,8 @@ export function getArts(params) {
 export function getArt(params) {
   return ax.get(`/article/${params.id}`)
 }
+
+// 喜欢文章
+export function likeArt(params) {
+  return ax.post('/like', params)
+}

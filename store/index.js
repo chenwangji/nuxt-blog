@@ -34,5 +34,14 @@ export const actions = {
   async getArt({ commit }, data) {
     const { result } = await service.getArt(data).catch(e => console.log(e))
     commit('article/SET_DETAILS', result || {})
+  },
+
+  // 喜欢文章
+  async likeArt({ commit }, data) {
+    const res = await service
+      .likeArt({ ...data, type: 0 })
+      .catch(e => console.log(e))
+    if (res && res.code === 1) commit('article/SET_LIKE')
+    return res
   }
 }
