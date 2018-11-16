@@ -46,14 +46,8 @@
 </template>
 
 <script>
-import ClickOutside from 'vue-click-outside'
-
 export default {
   name: 'MobileAside',
-
-  directives: {
-    ClickOutside
-  },
 
   data() {
     return {

@@ -28,11 +28,16 @@
         v-html="articleContent" />
     </div>
 
+    <dialog-com
+      :visible.sync="showDialog"
+      :class="{ 'dialog-mobile': mobileLayout }"
+      :img="img" />
   </div>
 </template>
 
 <script>
 import markdown from '~/plugins/marked'
+import dialogCom from '~/components/common/dialog'
 
 export default {
   name: 'MArticle',
@@ -49,6 +54,17 @@ export default {
     return { title: this.$store.state.article.details.title }
   },
 
+  components: {
+    dialogCom
+  },
+
+  data() {
+    return {
+      showDialog: false,
+      img: ''
+    }
+  },
+
   computed: {
     mobileLayout() {
       return this.$store.state.options.mobileLayout
@@ -60,7 +76,27 @@ export default {
       return markdown(this.article.content, false, true).html
     }
   },
-  methods: {}
+
+  mounted() {
+    this.initEvent()
+  },
+
+  methods: {
+    hide() {
+      this.showDialog = false
+    },
+    initEvent() {
+      const list = document.querySelectorAll('.img-pop')
+      let _this = this
+      list.forEach(img => {
+        img.addEventListener('click', e => {
+          e.stopPropagation()
+          this.showDialog = true
+          this.img = img.getAttribute('src')
+        })
+      })
+    }
+  }
 }
 </script>
 <style lang="scss">
@@ -318,6 +354,36 @@ export default {
           display: block;
           line-height: 1.6rem;
           background-color: transparent;
+        }
+      }
+    }
+  }
+
+  // 针对图片 dialog 重置 dialog 样式
+  .dialog {
+    > .dialog-body {
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100%;
+      background: transparent;
+
+      > .dialog-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        img {
+          display: block;
+          margin: 0 auto;
+          max-width: 90%;
+          max-height: 90%;
+          cursor: zoom-out;
         }
       }
     }

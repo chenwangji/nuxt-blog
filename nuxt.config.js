@@ -40,7 +40,8 @@ module.exports = {
   plugins: [
     { src: '~/plugins/filter.js' },
     { src: '~/plugins/highlight.js' },
-    { src: '~/plugins/marked.js' }
+    { src: '~/plugins/marked.js' },
+    { src: '~/plugins/clickOutside.js', ssr: false }
   ],
 
   /*
@@ -86,11 +87,7 @@ module.exports = {
       require('postcss-hexrgba')()
     ],
     // 将重复引用的(第三方/自有)模块添加到vendor.bundle.js
-    vendor: [
-      'axios',
-      'marked',
-      'highlight.js'
-    ],
+    vendor: ['axios', 'marked', 'highlight.js']
   },
   dev: process.env.NODE_ENV !== 'production',
   router: {
