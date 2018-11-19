@@ -59,6 +59,9 @@
             target="_blank">非商用-署名-自由转载</a>
         </div>
       </div>
+      <div class="share">
+        <share class="article-share"/>
+      </div>
     </div>
 
     <aside v-if="!mobileLayout">
@@ -66,7 +69,9 @@
         :class="{ 'is-liked': isLiked }"
         class="like"
         @click="like">
-        <i class="iconfont icon-like like" />
+        <i
+          :class="{ 'rubber-band': isLiked }"
+          class="iconfont icon-like like"/>
         <div
           :class="{'active': isLiked}"
           class="like-decoration" />
@@ -88,6 +93,7 @@
 <script>
 import markdown from '~/plugins/marked'
 import dialogCom from '~/components/common/dialog'
+import share from '~/components/layouts/share'
 
 export default {
   name: 'MArticle',
@@ -105,7 +111,8 @@ export default {
   },
 
   components: {
-    dialogCom
+    dialogCom,
+    share
   },
 
   data() {
@@ -491,6 +498,10 @@ export default {
         text-decoration: underline;
       }
     }
+
+    > .share {
+      margin-top: 1rem;
+    }
   }
 
   > aside {
@@ -520,6 +531,68 @@ export default {
 
       &.is-liked {
         color: $red;
+      }
+
+      > i {
+        font-size: 1.2rem;
+
+        &.rubber-band {
+          animation-fill-mode: both;
+          animation-name: rubberBand;
+        }
+      }
+
+      @keyframes rubberBand {
+        0% {
+          transform: scaleX(1);
+        }
+        30% {
+          transform: scale3d(1.25, 0.75, 1);
+        }
+        40% {
+          transform: scale3d(0.75, 1.25, 1);
+        }
+        50% {
+          transform: scale3d(1.15, 0.85, 1);
+        }
+        65% {
+          transform: scale3d(0.95, 1.05, 1);
+        }
+        75% {
+          transform: scale3d(1.05, 0.95, 1);
+        }
+        100% {
+          transform: scaleX(1);
+        }
+      }
+
+      > span {
+        position: absolute;
+        left: -0.8rem;
+        top: -10px;
+        line-height: 1;
+        color: $black;
+        font-size: 1rem;
+        padding: $xs-pad $sm-pad;
+        background: $border-color;
+        border-radius: 0.7rem;
+        transform: scale(0.75);
+      }
+
+      > .like-decoration {
+        position: absolute;
+        top: calc(1.5rem - 50px);
+        left: calc(1.5rem - 50px);
+        width: 100px;
+        height: 100px;
+        background: url(../../static/img/like_decoration.png) 0 0 no-repeat;
+        transition: background-position 1s steps(25);
+        transition-duration: 0;
+
+        &.active {
+          transition-duration: 1s;
+          background-position: -2500px 0;
+        }
       }
     }
   }

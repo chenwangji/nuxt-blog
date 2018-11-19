@@ -41,7 +41,8 @@ module.exports = {
     { src: '~/plugins/filter.js' },
     { src: '~/plugins/highlight.js' },
     { src: '~/plugins/marked.js' },
-    { src: '~/plugins/clickOutside.js', ssr: false }
+    { src: '~/plugins/clickOutside.js', ssr: false },
+    { src: '~/plugins/copy.js', ssr: false }
   ],
 
   /*
