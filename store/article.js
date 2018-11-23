@@ -37,5 +37,10 @@ export const mutations = {
 
   SET_LIKE(state) {
     state.details.meta.likes += 1
+  },
+
+  // 增加评论
+  ADD_COMMENT(state) {
+    state.details.meta.comments += 1
   }
 }

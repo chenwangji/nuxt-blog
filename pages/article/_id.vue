@@ -64,6 +64,12 @@
       </div>
     </div>
 
+    <div class="comment">
+      <comment
+        v-if="article.title"
+        :post-id="article.id"/>
+    </div>
+
     <aside v-if="!mobileLayout">
       <div
         :class="{ 'is-liked': isLiked }"
@@ -94,6 +100,7 @@
 import markdown from '~/plugins/marked'
 import dialogCom from '~/components/common/dialog'
 import share from '~/components/layouts/share'
+import comment from '~/components/common/comment'
 
 export default {
   name: 'MArticle',
@@ -112,7 +119,8 @@ export default {
 
   components: {
     dialogCom,
-    share
+    share,
+    comment
   },
 
   data() {

@@ -14,3 +14,13 @@ export function getArt(params) {
 export function likeArt(params) {
   return ax.post('/like', params)
 }
+
+// 获取评论列表
+export function getComments(params) {
+  return ax.get('/comments', { params })
+}
+
+// 提交评论
+export function postComment(data) {
+  return ax.post('comment', data)
+}
