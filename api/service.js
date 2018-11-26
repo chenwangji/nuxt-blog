@@ -22,5 +22,10 @@ export function getComments(params) {
 
 // 提交评论
 export function postComment(data) {
-  return ax.post('comment', data)
+  return ax.post('/comment', data)
+}
+
+// 喜欢评论
+export function likeComment(data) {
+  return ax.post('/like', data)
 }

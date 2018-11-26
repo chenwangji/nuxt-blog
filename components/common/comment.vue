@@ -38,17 +38,21 @@
                 <span>
                   <span>回复 </span>
                   <a
-                    href="">
-                    <strong>{{ 'mock' }}</strong>
+                    href=""
+                    @click.stop.prevent="toSomeAnchorById(`comment-item-${replyCommentSelf.id}`)">
+                    <strong>{{ replyCommentSelf.author.name }}</strong>
                   </a>
                 </span>
                 <a
                   class="cancel iconfont icon-cancel"
-                  href=""/>
+                  href=""
+                  @click.stop.prevent="cancelCommentReply"/>
               </div>
-              <div class="reply-preview">
-                mock
-              </div>
+              <div
+                class="reply-preview"
+                v-html="marked(replyCommentSelf.content).length > 100
+                  ? marked(replyCommentSelf.content).slice(0, 100) + '...'
+                : marked(replyCommentSelf)"/>
             </div>
             <div
               key="2"
@@ -263,7 +267,7 @@
                 target="_blank"
                 @click.stop="clickUser($event, comment.author)">
                 <img
-                  :src="'/img/user.png'"
+                  :src="gravatar(comment.author.email) || '/img/user.png'"
                   :alt="comment.author.name || '匿名用户'">
               </a>
             </div>
@@ -276,31 +280,80 @@
                   @click.stop="clickUser($event, comment.author)">
                   <img
                     v-if="mobileLayout"
-                    :src="'/img/user.png'"
+                    :src="gravatar(comment.author.email) || '/img/user.png'"
                     :alt="comment.author.name || '匿名用户'"
                     width="24px"
                     style="margin-right: 10px">
                   <span>{{ comment.author.name }}</span>
                 </a>
-                <span class="flool">{{ comment.create_at | dateFormat('yyyy.MM.dd hh:mm') }}</span>
+                <span class="flool">
+                  {{ comment.create_at | dateFormat('yyyy.MM.dd hh:mm') }}
+                </span>
               </div>
               <div class="cm-content">
+                <div
+                  v-if="!!comment.pid"
+                  class="reply-box">
+                  <p class="reply-name">
+                    <a
+                      href=""
+                      @click.stop.prevent="toSomeAnchorById(`comment-item-${comment.pid}`)">
+                      <span/>
+                      <strong v-if="foundReplyParent(comment.pid)">
+                        {{ foundReplyParent(comment.pid).author.name }}
+                      </strong>
+                    </a>
+                  </p>
+                  <div
+                    class="reply-content"
+                    v-html="foundReplyParentContent(comment.pid).length > 150
+                      ? foundReplyParentContent(comment.pid).slice(0, 150) + '...'
+                    : foundReplyParentContent(comment.pid)" />
+                </div>
                 <div v-html="marked(comment.content)"/>
               </div>
-              <div class="cm-footer">footer</div>
+              <div class="cm-footer">
+                <a
+                  :class="{ liked: commentLiked(comment._id), actived: !!comment.likes }"
+                  href=""
+                  class="like"
+                  @click.stop.prevent="likeComment(comment)">
+                  <i class="iconfont icon-zan"/>
+                  <span>顶&nbsp;({{ comment.likes }})</span>
+                </a>
+                <a
+                  class="reply"
+                  href=""
+                  @click.stop.prevent="replyComment(comment)">
+                  <i class="iconfont icon-reply"/>
+                  <span>回复</span>
+                </a>
+              </div>
             </div>
           </li>
         </transition-group>
       </div>
     </transition-group>
+    <div class="loading">
+      <vue-loading
+        :size="{ width: '50px', height: '50px' }"
+        type="bars"
+        color="#d9544e" />
+    </div>
   </div>
 </template>
 
 <script>
+// const Loading = () => import('vue-loading-template')
+// import Loading from '~/plugins/pageLoading'
 import marked from '~/plugins/marked'
+import gravatar from '~/plugins/gravatar'
+import { scrollTo } from '~/utils/scroll'
 
 export default {
   name: 'Comment',
+
+  // components: { VueLoading: Loading.VueLoading },
 
   props: {
     postId: {
@@ -339,7 +392,7 @@ export default {
       return this.$store.state.comment
     },
 
-    replayCommentSelf() {
+    replyCommentSelf() {
       return this.comment.data.data.find(comment => {
         return Object.is(comment.id, this.pid)
       })
@@ -359,6 +412,14 @@ export default {
     // markdown 解析
     marked(content) {
       return marked(content, null, false).html
+    },
+    // 头像
+    gravatar(email) {
+      if (!this.regexs.email.test(email)) return null
+      const gravatarUrl = gravatar.url(email, {
+        protocol: 'https'
+      })
+      return gravatarUrl
     },
     // 编辑器先关
     // 编辑器内容同步
@@ -465,8 +526,78 @@ export default {
       Object.keys(this.user).forEach(key => (this.user[key] = ''))
     },
 
+    // 跳转到某条指定的 id 位置
+    toSomeAnchorById(id) {
+      const targetDom = document.getElementById(id)
+      if (targetDom) {
+        const isToEditor = Object.is(id, 'post-box')
+        const isToCommentBox = Object.is(id, 'comment-box')
+        scrollTo(targetDom, 500, {
+          offset: isToEditor ? -110 : isToCommentBox ? -70 : -300
+        })
+
+        // 进入编辑模式的话，激活光标
+        if (isToEditor) {
+          const p = this.$refs.markdown
+          const s = window.getSelection()
+          const r = document.createRange()
+          r.setStart(p, p.childElementCount)
+          r.setEnd(p, p.childElementCount)
+          s.removeAllRanges()
+          s.addRange(r)
+        }
+      }
+    },
+
+    // 点赞评论
+    async likeComment(comment) {
+      if (this.commentLiked(comment._id)) return false
+      try {
+        console.log(comment._id)
+        await this.$store.dispatch('likeComment', {
+          type: 1,
+          _id: comment._id
+        })
+        this.likeComments.push(comment._id)
+        localStorage.setItem('LIKE_COMMENTS', JSON.stringify(this.likeComments))
+      } catch (error) {
+        console.warn('评论点赞失败', error)
+      }
+    },
+
+    // 回复评论
+    replyComment(comment) {
+      this.pid = comment.id
+      this.toSomeAnchorById('post-box')
+    },
+
+    // 取消回复
+    cancelCommentReply() {
+      this.pid = 0
+    },
+
+    // 找到父级回复
+    foundReplyParent(pid) {
+      const parent = this.comment.data.data.find(comment => {
+        return Object.is(comment.id, pid)
+      })
+      return parent || null
+    },
+
+    // 父级回复内容
+    foundReplyParentContent(pid) {
+      const parent = this.foundReplyParent(pid)
+      const content = parent ? parent.content : ''
+      return this.marked(content)
+    },
+
     // 点击用户头像
     clickUser(e, author) {},
+
+    // 某条评论是否被点赞
+    commentLiked(comment_id) {
+      return this.likeComments.includes(comment_id)
+    },
 
     // 获取评论列表
     async loadCommentList(params = {}) {
@@ -502,6 +633,14 @@ export default {
       if (res.code === 1) {
         this.userCacheMode = true
         this.clearCommentContent()
+        this.cancelCommentReply()
+        this.$nextTick(() => {
+          scrollTo(
+            document.querySelector(`#comment-item-${res.result.id}`),
+            200,
+            { offset: 0 }
+          )
+        })
         localStorage.setItem('BLOG_USER', JSON.stringify(this.user))
       } else alert('操作失败')
     }

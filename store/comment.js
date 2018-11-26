@@ -43,5 +43,13 @@ export const mutations = {
 
   POST_ITEM_FAILURE(state) {
     state.posting = false
+  },
+
+  // 喜欢某条评论
+  LIKE_ITEM(state, likedComment) {
+    const comment = state.data.data.find(item => {
+      return Object.is(item._id, likedComment._id)
+    })
+    if (comment) comment.likes++
   }
 }

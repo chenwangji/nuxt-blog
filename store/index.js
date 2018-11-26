@@ -47,7 +47,7 @@ export const actions = {
 
   // 根据 post_id 获取评论列表
   async loadCommentsByPostId({ commit, state }, data) {
-    data.sort = data.sort || -1
+    data.sort = data.sort || 1
     data.current_page = data.current_page || 1
     data.page_size = data.page_size || 20
 
@@ -75,6 +75,13 @@ export const actions = {
       commit('comment/POST_ITEM_SUCCESS', res)
       if (comment.post_id !== 0) commit('article/ADD_COMMENT')
     } else commit('comment/POST_ITEM_FAILURE')
+    return res
+  },
+
+  // 评论点赞
+  async likeComment({ commit }, data) {
+    const res = await service.likeComment(data).catch(e => console.error(e))
+    if (res && res.code === 1) commit('comment/LIKE_ITEM', data)
     return res
   }
 }
