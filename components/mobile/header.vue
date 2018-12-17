@@ -1,5 +1,22 @@
 <template>
   <header class="mobile-head">
+    <form
+      :class="{ active: search }"
+      class="search"
+      @submit.stop.prevent="searchTo">
+      <input
+        v-model.trim="keyword"
+        :maxlength="20"
+        type="text"
+        placeholder="Search"
+        required>
+      <a
+        href="javascript:;"
+        @click="close">
+        <i class="iconfont icon-close"/>
+      </a>
+    </form>
+
     <nav>
       <div>
         <a
@@ -15,6 +32,13 @@
             width="30">
         </nuxt-link>
       </div>
+      <div>
+        <a
+          href="javascript:;"
+          @click.stop.prevent="search = !search">
+          <i class="iconfont icon-search"/>
+        </a>
+      </div>
     </nav>
   </header>
 </template>
@@ -24,7 +48,10 @@ export default {
   name: 'MobileHeader',
 
   data() {
-    return {}
+    return {
+      search: false,
+      keyword: ''
+    }
   },
 
   computed: {
@@ -33,9 +60,26 @@ export default {
     }
   },
 
+  watch: {
+    $route() {
+      this.search = false
+      this.toggleSidebar(false)
+    }
+  },
+
   methods: {
     toggleSidebar(state) {
       this.$store.commit('options/SET_MOBILE_SIDEBAR', state)
+    },
+
+    searchTo() {
+      console.log(this.keyword)
+      this.$router.push(`/search/${this.keyword}`)
+    },
+
+    close() {
+      this.keyword = ''
+      this.search = false
     }
   }
 }
@@ -61,6 +105,32 @@ export default {
     > .name {
       font-size: $font-size-large;
       color: $black;
+    }
+  }
+
+  .search {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background: $white;
+    z-index: 999;
+    @include css3-prefix('transform', 'translateY(-100%)');
+
+    &.active {
+      transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66);
+      @include css3-prefix('transform', 'translateY(0)');
+    }
+
+    input {
+      width: $container-right;
+      height: 2rem;
+      line-height: 2rem;
     }
   }
 }
