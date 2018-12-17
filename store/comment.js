@@ -51,5 +51,13 @@ export const mutations = {
       return Object.is(item._id, likedComment._id)
     })
     if (comment) comment.likes++
+  },
+
+  // 清空评论
+  CLEAR_LIST(state) {
+    state.data = {
+      data: [],
+      pagination: {}
+    }
   }
 }

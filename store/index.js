@@ -57,7 +57,7 @@ export const actions = {
       if (res && res.code === 1) {
         let list
         if (res.result.pagination.current_page === 1) list = res.result.data
-        else list = [...state.comment.data.data, res.result.data]
+        else list = [...state.comment.data.data, ...res.result.data]
         commit('comment/GET_LIST_SUCCESS', {
           data: list,
           pagination: res.result.pagination

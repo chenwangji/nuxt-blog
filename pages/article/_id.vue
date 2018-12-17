@@ -83,7 +83,9 @@
           class="like-decoration" />
         <span>{{ article.meta.likes || 0 }}</span>
       </div>
-      <div class="comment">
+      <div
+        class="comment"
+        @click="scrollToComment">
         <i class="iconfont icon-comments" />
         <span>{{ article.meta.comments || 0 }}</span>
       </div>
@@ -101,6 +103,7 @@ import markdown from '~/plugins/marked'
 import dialogCom from '~/components/common/dialog'
 import share from '~/components/layouts/share'
 import comment from '~/components/common/comment'
+import { scrollTo } from '~/utils/scroll'
 
 export default {
   name: 'MArticle',
@@ -190,6 +193,10 @@ export default {
 
     hide() {
       this.showDialog = false
+    },
+
+    scrollToComment() {
+      scrollTo(document.querySelector('#comment-box'), 500, { offset: 0 })
     }
   }
 }

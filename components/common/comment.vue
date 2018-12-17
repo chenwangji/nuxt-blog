@@ -335,20 +335,22 @@
       </div>
     </transition-group>
     <div class="loading">
-      <vue-loading
-        :size="{ width: '50px', height: '50px' }"
-        type="bars"
-        color="#d9544e" />
+      <no-ssr>
+        <vue-loading
+          v-show="comment.fetching"
+          :size="{ width: '50px', height: '50px' }"
+          type="bars"
+          color="#d9544e" />
+      </no-ssr>
     </div>
   </div>
 </template>
 
 <script>
-// const Loading = () => import('vue-loading-template')
-// import Loading from '~/plugins/pageLoading'
 import marked from '~/plugins/marked'
 import gravatar from '~/plugins/gravatar'
 import { scrollTo } from '~/utils/scroll'
+import _ from '~/utils/underscore'
 
 export default {
   name: 'Comment',
@@ -400,12 +402,56 @@ export default {
 
     mobileLayout() {
       return this.$store.state.options.mobileLayout
+    },
+
+    haveMore() {
+      const {
+        current_page,
+        total_page
+      } = this.$store.state.comment.data.pagination
+      return current_page !== total_page
     }
   },
 
   mounted() {
     this.initUser()
-    this.loadCommentList()
+
+    // 移动端直接加载评论
+    if (!!this.mobileLayout) {
+      this.loadCommentList({ page_size: 100 })
+      return
+    }
+
+    window.onscroll = _.throttle(() => {
+      // 总高度
+      const scrollHeight =
+        document.documentElement.scrollHeight || document.body.scrollHeight
+
+      // 滚动距离
+      const scrollTop =
+        document.documentElement.scrollTop || document.body.scrollTop
+
+      // 窗口高度
+      const windowHeight = window.innerHeight
+
+      if (scrollHeight - scrollTop - windowHeight <= 200) {
+        if (
+          !this.comment.data.pagination.total_page &&
+          !this.comment.fetching
+        ) {
+          this.loadCommentList()
+        } else if (this.haveMore && !this.comment.fetching) {
+          this.loadCommentList({
+            current_page: this.comment.data.pagination.current_page + 1
+          })
+        }
+      }
+    }, 400)
+  },
+
+  destroyed() {
+    window.onscroll = null
+    this.$store.commit('comment/CLEAR_LIST')
   },
 
   methods: {
@@ -553,7 +599,6 @@ export default {
     async likeComment(comment) {
       if (this.commentLiked(comment._id)) return false
       try {
-        console.log(comment._id)
         await this.$store.dispatch('likeComment', {
           type: 1,
           _id: comment._id

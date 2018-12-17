@@ -28,7 +28,6 @@ export default {
   },
 
   fetch({ store }) {
-    console.log('fetch')
     return store.dispatch('getArtList', { type: 3 })
   },
 
