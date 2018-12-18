@@ -215,43 +215,6 @@ export default {
         }
       }
     }
-
-    .sitemap-item {
-      padding: 1rem;
-
-      article {
-        position: relative;
-        display: flex;
-        align-items: center;
-        height: 20px;
-        line-height: 20px;
-
-        &::before {
-          content: ' ';
-          position: absolute;
-          left: 0px;
-          top: 6px;
-          width: 6px;
-          height: 6px;
-          margin-left: -4px;
-          background: $dividers;
-          border-radius: 50%;
-        }
-
-        time {
-          margin-left: $md-pad;
-          color: $dividers;
-          font-size: $font-size-small;
-        }
-
-        a {
-          margin-left: $md-pad;
-          text-decoration: underline;
-          color: $black;
-          @include text-overflow();
-        }
-      }
-    }
   }
 
   > .tag {
