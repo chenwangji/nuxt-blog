@@ -5,6 +5,11 @@ export function getArts(params) {
   return ax.get('/article', { params })
 }
 
+// 获取文章归档
+export function getAllArts() {
+  return ax.get('/getAllArts')
+}
+
 // 获取文章详情
 export function getArt(params) {
   return ax.get(`/article/${params.id}`)
@@ -28,4 +33,9 @@ export function postComment(data) {
 // 喜欢评论
 export function likeComment(data) {
   return ax.post('/like', data)
+}
+
+// 获取标签
+export function getTag(params) {
+  return ax.get('/tag', { params })
 }

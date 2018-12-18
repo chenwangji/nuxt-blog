@@ -12,6 +12,13 @@ export const actions = {
 
     store.commit('options/SET_MOBIBLE_LAYOUT', isMobile)
     store.commit('options/SET_USER_AGENT', userAgent)
+
+    const initAppData = [
+      // 标签
+      store.dispatch('getTag')
+    ]
+
+    return Promise.all(initAppData)
   },
 
   // 获取文章列表
@@ -28,6 +35,14 @@ export const actions = {
       })
     } else commit('article/SET_ART_FAIL')
     return res
+  },
+
+  // 文章归档
+  async getSitemap({ commit }) {
+    commit('sitemap/FETCH_ART')
+    const res = await service.getAllArts().catch(err => console.log(err))
+    if (res && res.code === 1) commit('sitemap/SET_ART_SUCCESS', res.result)
+    else commit('commit/SET_ART_FAIL')
   },
 
   // 文章详情
@@ -83,5 +98,13 @@ export const actions = {
     const res = await service.likeComment(data).catch(e => console.error(e))
     if (res && res.code === 1) commit('comment/LIKE_ITEM', data)
     return res
+  },
+
+  // 获取标签
+  async getTag({ commit }) {
+    const res = await service
+      .getTag({ page_size: 100 })
+      .catch(e => console.error(e))
+    commit('tag/SET_TAG', res.result || { pagination: {}, list: [] })
   }
 }
