@@ -14,7 +14,13 @@ export const state = () => {
     isError: false,
 
     // 移动端侧边栏
-    mobileSidebar: false
+    mobileSidebar: false,
+
+    // 用户信息
+    adminInfo: {},
+
+    // 网站信息
+    option: {}
   }
 }
 
@@ -42,5 +48,15 @@ export const mutations = {
   // 设置是否是错误页面
   SET_ERROR_PAGE(state, action) {
     state.isError = action
+  },
+
+  // 网站信息
+  SET_WEB_OPTION(state, data) {
+    state.option = data
+  },
+
+  // 用户信息
+  SET_ADMIN_INFO(state, data) {
+    state.adminInfo = data
   }
 }

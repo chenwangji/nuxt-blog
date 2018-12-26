@@ -1,5 +1,15 @@
 import ax from './axios'
 
+// 获取用户信息
+export function getAuth() {
+  return ax.get('/auth')
+}
+
+// 获取网站配置项
+export function getOpt() {
+  return ax.get('/option')
+}
+
 // 获取文章列表
 export function getArts(params) {
   return ax.get('/article', { params })

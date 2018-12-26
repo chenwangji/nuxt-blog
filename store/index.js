@@ -14,11 +14,29 @@ export const actions = {
     store.commit('options/SET_USER_AGENT', userAgent)
 
     const initAppData = [
+      // 用户信息
+      store.dispatch('getAdminInfo'),
+
+      // 网站信息
+      store.dispatch('getOpt'),
+
       // 标签
       store.dispatch('getTag')
     ]
 
     return Promise.all(initAppData)
+  },
+
+  // 获取用户信息
+  async getAdminInfo({ commit }) {
+    const res = await service.getAuth().catch(e => console.error(e))
+    commit('options/SET_ADMIN_INFO', res.result || {})
+  },
+
+  // 获取网站信息
+  async getOpt({ commit }) {
+    const res = await service.getOpt().catch(e => console.error(e))
+    commit('options/SET_WEB_OPTION', res.result || {})
   },
 
   // 获取文章列表
