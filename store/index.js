@@ -58,7 +58,7 @@ export const actions = {
   // 文章归档
   async getSitemap({ commit }) {
     commit('sitemap/FETCH_ART')
-    const res = await service.getAllArts().catch(err => console.log(err))
+    const res = await service.getAllArts().catch(err => console.error(err))
     if (res && res.code === 1) commit('sitemap/SET_ART_SUCCESS', res.result)
     else commit('commit/SET_ART_FAIL')
   },
@@ -124,5 +124,28 @@ export const actions = {
       .getTag({ page_size: 100 })
       .catch(e => console.error(e))
     commit('tag/SET_TAG', res.result || { pagination: {}, list: [] })
+  },
+
+  // 获取留言列表
+  async getHeros({ commit, state }, data = { current_page: 1 }) {
+    commit('heros/FETCH_HERO')
+    const res = await service.getHeros(data).catch(e => console.error(e))
+    if (res && res.code === 1) {
+      let list
+      if (res.result.pagination.current_page === 1) list = res.result.list
+      else list = [...state.heros.data.list, ...res.result.list]
+      commit('heros/SET_HERO_SUCCESS', {
+        list,
+        pagination: res.result.pagination
+      })
+    } else commit('heros/SET_HERO_FAIL')
+    return res
+  },
+
+  async postHero({ commit }, data) {
+    commit('heros/POST_ITEM')
+    const res = await service.postHero(data).catch(e => console.error(e))
+    commit('heros/POST_ITEM_FINAL')
+    return res
   }
 }

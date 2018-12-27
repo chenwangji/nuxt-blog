@@ -128,6 +128,12 @@ import comments from '~/components/common/comment'
 export default {
   name: 'About',
 
+  transition: 'fade',
+
+  head: {
+    title: 'About'
+  },
+
   components: { comments },
 
   computed: {

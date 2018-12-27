@@ -49,3 +49,13 @@ export function likeComment(data) {
 export function getTag(params) {
   return ax.get('/tag', { params })
 }
+
+// 获取留言列表
+export function getHeros(params) {
+  return ax.get('/heros', { params })
+}
+
+// 发表留言
+export function postHero(data) {
+  return ax.post('/hero', { ...data })
+}
