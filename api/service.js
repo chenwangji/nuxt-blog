@@ -59,3 +59,7 @@ export function getHeros(params) {
 export function postHero(data) {
   return ax.post('/hero', { ...data })
 }
+
+export function getLink(params) {
+  return ax.get('/links', { params })
+}

@@ -8,7 +8,7 @@
         <span>/</span>
         <nuxt-link to="/think">思想</nuxt-link>
         <span>/</span>
-        <nuxt-link to="/fuck">民谣</nuxt-link>
+        <nuxt-link to="/funk">民谣</nuxt-link>
       </h4>
     </div>
     <div

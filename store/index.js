@@ -21,7 +21,10 @@ export const actions = {
       store.dispatch('getOpt'),
 
       // 标签
-      store.dispatch('getTag')
+      store.dispatch('getTag'),
+
+      // 友情链接
+      store.dispatch('getLink', { page_size: 1000 })
     ]
 
     return Promise.all(initAppData)
@@ -146,6 +149,18 @@ export const actions = {
     commit('heros/POST_ITEM')
     const res = await service.postHero(data).catch(e => console.error(e))
     commit('heros/POST_ITEM_FINAL')
+    return res
+  },
+
+  // 获取友链
+  async getLink({ commit, state }, data = { current_page: 1, page_size: 30 }) {
+    const res = await service.getLink(data).catch(err => console.error(err))
+    if (res && res.code === 1) {
+      commit('link/SET_LINK_SUCCESS', {
+        list: res.result.list,
+        pagination: res.result.pagination
+      })
+    } else commit('link/SET_LINK_FAIL')
     return res
   }
 }

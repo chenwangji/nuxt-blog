@@ -30,23 +30,12 @@
 export default {
   name: 'MyFooter',
 
-  data() {
-    return {
-      friends: [
-        {
-          name: 'baidu',
-          url: 'https://www.baidu.com'
-        },
-        {
-          name: 'google',
-          url: 'https://www.google.com'
-        }
-      ]
-    }
-  },
   computed: {
     mobileLayout() {
       return this.$store.state.options.mobileLayout
+    },
+    friends() {
+      return this.$store.state.link.data.list
     }
   }
 }

@@ -146,10 +146,7 @@ export default {
     },
 
     friends() {
-      return [
-        { name: '百度', url: 'https://baidu.com' },
-        { name: '谷歌', url: 'https://google.com' }
-      ]
+      return this.$store.state.link.data.list
     }
   }
 }
