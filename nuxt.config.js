@@ -1,100 +1,148 @@
-const pkg = require('./package')
-
+// const pkg = require('./package')
 module.exports = {
   mode: 'universal',
 
-  cache: {
-    max: 1000,
-    maxAge: 900000
-  },
+  // server: {
+  //   port: 3333, // default: 3000
+  //   host: '0.0.0.0' // default: localhost
+  // },
+
+  // render: {
+  //   csp: true
+  // },
 
   /*
-  ** Headers of the page
-  */
+   ** Headers of the page
+   */
   head: {
-    title: pkg.name,
+    title: '码农，读书，民谣',
+    titleTemplate: '%s | wangji',
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: pkg.description }
+      {
+        charset: 'utf-8'
+      },
+      {
+        'http-equiv': 'cleartype',
+        content: 'on'
+      },
+      {
+        'http-equiv': 'Cache-Control'
+      },
+      {
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1, user-scalable=no'
+      },
+      {
+        hid: 'description',
+        name: 'description',
+        content: '民谣，读书，码农。'
+      },
+      {
+        hid: 'keywords',
+        name: 'keywords',
+        content: '前端开发，JavaScript, Node, Vue，nuxt'
+      },
+      {
+        name: 'author',
+        content: 'chenwangji_mail@foxmail.com'
+      }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+
+    link: [
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: '/favicon.ico'
+      }
+    ],
+    script: [],
+    noscript: [
+      {
+        innerHTML: 'This website requires JavaScript.'
+      }
+    ],
+    __dangerouslyDisableSanitizers: ['script']
   },
 
   /*
-  ** Customize the progress-bar color
-  */
-  loading: { color: '#24292e' },
+   ** Customize the progress-bar color
+   */
+  loading: {
+    color: '#20A0FF'
+  },
 
   /*
-  ** Global CSS
-  */
+   ** Global CSS
+   */
   css: [
-    { src: '~assets/scss/index.scss', lang: 'scss' },
+    {
+      src: './assets/scss/index.scss',
+      lang: 'sass'
+    },
     'highlight.js/styles/github.css'
   ],
 
   /*
-  ** Plugins to load before mounting the App
-  */
+   ** Plugins to load before mounting the App
+   */
   plugins: [
-    { src: '~/plugins/filter.js' },
-    { src: '~/plugins/highlight.js' },
-    { src: '~/plugins/marked.js' },
-    { src: '~/plugins/clickOutside.js', ssr: false },
-    { src: '~/plugins/copy.js', ssr: false },
-    { src: '~/plugins/gravatar.js' },
-    { src: '~/plugins/pageLoading.js', ssr: false }
-  ],
-
-  /*
-  ** Nuxt.js modules
-  */
-  modules: [
-    // Doc: https://github.com/nuxt-community/axios-module#usage
-    // '@nuxtjs/axios'
-  ],
-  /*
-  ** Axios module configuration
-  */
-  // axios: {
-  //   // See https://github.com/nuxt-community/axios-module#options
-  // },
-
-  /*
-  ** Build configuration
-  */
-  build: {
-    /*
-    ** You can extend webpack config here
-    */
-    extend(config, ctx) {
-      // Run ESLint on save
-      if (ctx.isDev && ctx.isClient) {
-        config.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /(node_modules)/
-        })
-      }
+    {
+      src: '~/plugins/marked.js'
     },
-    styleResources: {
-      scss: ['./assets/scss/variable.scss', './assets/scss/mixin.scss'],
-      options: {}
+    {
+      src: '~/plugins/highlight.js'
     },
-    // postcss
-    postcss: [
-      require('postcss-nested')(),
-      require('postcss-responsive-type')(),
-      require('postcss-hexrgba')()
-    ],
-    // 将重复引用的(第三方/自有)模块添加到vendor.bundle.js
-    vendor: ['axios', 'marked', 'highlight.js']
-  },
-  dev: process.env.NODE_ENV !== 'production',
+    {
+      src: '~/plugins/gravatar.js'
+    },
+    {
+      src: '~/plugins/clickOutside.js',
+      ssr: false
+    },
+    {
+      src: '~/plugins/copy.js',
+      ssr: false
+    },
+    {
+      src: '~/plugins/filter.js'
+    }
+  ],
   router: {
     middleware: ['layout'],
     linkActiveClass: 'link-active'
+  },
+
+  /*
+   ** Nuxt.js modules
+   */
+  modules: [
+    // Doc: https://axios.nuxtjs.org/usage
+    '@nuxtjs/pwa',
+    '@nuxtjs/style-resources',
+    [
+      '@nuxtjs/component-cache',
+      {
+        max: 10000,
+        maxAge: 1000 * 60 * 60
+      }
+    ]
+  ],
+  styleResources: {
+    scss: ['./assets/scss/variable.scss', './assets/scss/mixin.scss']
+  },
+
+  /*
+   ** Build configuration
+   */
+  build: {
+    // extractCSS: true,
+    extend(config, ctx) {
+      // ..
+    },
+    babel: {
+      presets({ isServer }) {
+        return [['@nuxtjs/babel-preset-app', { targets: isServer ? { node: '10.4.0' } : { chrome: 69 } }]];
+      }
+    }
   }
-}
+};

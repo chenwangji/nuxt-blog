@@ -84,7 +84,6 @@ export default {
   },
 
   mounted() {
-    console.log(this.$store)
     const theme = window.localStorage.getItem('THEME') || 'light'
     document.body.id = theme
   }

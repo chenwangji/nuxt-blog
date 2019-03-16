@@ -73,7 +73,6 @@ export default {
     },
 
     searchTo() {
-      console.log(this.keyword)
       this.$router.push(`/search/${this.keyword}`)
     },
 

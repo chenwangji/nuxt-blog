@@ -140,8 +140,6 @@ export default {
         ? url.replace(/\s|\||todyto.cn/g, '')
         : encodeURI(url)
 
-      console.log(url)
-
       // 新窗口名
       const winName = 'newWin'
 
