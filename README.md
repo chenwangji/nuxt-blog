@@ -7,6 +7,9 @@
 - [nuxt-blog-server](https://github.com/chenwangji/nuxt-blog-server)
 - [nuxt-blog-admin](https://github.com/chenwangji/nuxt-blog-admin)
 
+## todo
+- [ ] https
+
 > My tremendous Nuxt.js project
 
 ## Build Setup
