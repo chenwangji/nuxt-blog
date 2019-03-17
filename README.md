@@ -1,4 +1,11 @@
 # nuxt-blog
+[nuxt-blog](http://log.todyto.cn) 实现仓库。
+
+相关代码仓库：
+
+- [nuxt-blog](https://github.com/chenwangji/nuxt-blog)
+- [nuxt-blog-server](https://github.com/chenwangji/nuxt-blog-server)
+- [nuxt-blog-admin](https://github.com/chenwangji/nuxt-blog-admin)
 
 > My tremendous Nuxt.js project
 
