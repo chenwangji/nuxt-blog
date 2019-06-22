@@ -34,7 +34,7 @@
           <span class="hr" />
           <span class="comments">{{ item.meta.comments }} 条评论</span>
           <span class="hr" />
-          <span class="like">{{ item.meta.like }} 人喜欢</span>
+          <span class="like">{{ item.meta.likes }} 人喜欢</span>
         </div>
       </div>
       <span class="article-line" />

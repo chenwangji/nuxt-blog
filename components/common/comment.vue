@@ -375,7 +375,7 @@ export default {
       userCacheMode: false,
       userCacheEditing: false,
       user: {
-        name: '望基',
+        name: '',
         email: '',
         site: '',
         gravatar: null
