@@ -18,6 +18,13 @@
         src="/img/will.png"
         width="80">
     </div>
+
+    <div class="right">
+      <a href="http://www.beian.miit.gov.cn/" target="_blank">
+        <img class="beian" src="https://pic3.zhimg.com/80/v2-d0289dc0a46fc5b15b3363ffa78cf6c7.png">
+        粤ICP备18147451号
+      </a>
+    </div>
   </section>
 </template>
 
@@ -78,5 +85,22 @@ export default {
     top: 70px;
     left: 60px;
   }
+
+  .right {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #fff;
+
+    img.beian {
+      display: inline-block;
+      height: 15px;
+      vertical-align: middle;
+      transform: translateY(-2px);
+    }
+  }
+
 }
 </style>
