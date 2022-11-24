@@ -15,8 +15,8 @@ module.exports = {
    ** Headers of the page
    */
   head: {
-    title: '码农，读书，民谣',
-    titleTemplate: '%s | wangji',
+    title: '技术生活自留地',
+    titleTemplate: '%s',
     meta: [
       {
         charset: 'utf-8'
